@@ -1,17 +1,30 @@
+import dayjs from 'dayjs';
 import connection from '../controllers/database.js';
 
 export async function listCustomers(req, res) {
     const { cpf } = req.query;
     try {
+        let obj;
         if (cpf) {
             const query = await connection.query(`
             SELECT * FROM customers
             WHERE LOWER(cpf) LIKE LOWER($1)`, [`${cpf}%`]);
-            return res.status(200).send(query.rows);
+            obj = query.rows.map((item) => {
+                return {
+                    ...item,
+                    birthday: dayjs(item.birthday).format("YYYY-MM-DD"),
+                }
+            });
         } else {
             const query = await connection.query(`SELECT * FROM customers`);
-            return res.status(200).send(query.rows);
+            obj = query.rows.map((item) => {
+                return {
+                    ...item,
+                    birthday: dayjs(item.birthday).format("YYYY-MM-DD"),
+                }
+            });
         }
+        return res.status(200).send(obj);
     } catch (err) {
         return res.status(500).send(err.message);
     }
@@ -25,7 +38,11 @@ export async function findCustomer(req, res) {
         if (!query.rows[0]) {
             res.sendStatus(404);
         }
-        return res.status(200).send(query.rows[0]);
+        const obj = {
+            ...query.rows[0],
+            birthday: dayjs(query.rows[0].birthday).format("YYYY-MM-DD")
+        }
+        return res.status(200).send(obj);
     } catch (err) {
         return res.status(500).send(err.message);
     }
