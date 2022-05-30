@@ -17,7 +17,8 @@ export async function validateCategoy(req, res, next) {
 
     try {
         const exist = await connection.query(`SELECT * FROM categories WHERE name=$1`, [name]);
-        if (!exist.rows[0]) {
+        console.log(exist.rows);
+        if (exist.rows[0]) {
             return res.sendStatus(409);
         }
     } catch (err) {
