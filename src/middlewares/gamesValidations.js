@@ -13,7 +13,6 @@ export async function validateGame(req, res, next) {
     const { name, image, stockTotal, categoryId, pricePerDay } = req.body;
 
     const validation = gameSchema.validate({ name, image, stockTotal, categoryId, pricePerDay }, { abortEarly: false });
-    console.log(validation);
     if (validation.error) {
         return res.sendStatus(400);
     }
