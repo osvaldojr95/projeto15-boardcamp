@@ -36,7 +36,7 @@ export async function findCustomer(req, res) {
         const query = await connection.query(`
             SELECT * FROM customers WHERE id=$1`, [id]);
         if (!query.rows[0]) {
-            res.sendStatus(404);
+            return res.sendStatus(404);
         }
         const obj = {
             ...query.rows[0],
